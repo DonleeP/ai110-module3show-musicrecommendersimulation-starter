@@ -120,11 +120,31 @@ Top 5 recommendations:
 
 ## Experiments You Tried
 
-Use this section to document the experiments you ran. For example:
+**Experiment: double the energy weight, halve the genre weight.**
+I changed `GENRE_WEIGHT` from 2.0 to 1.0 and `ENERGY_WEIGHT` from 2.0 to 4.0,
+then re-ran the "High-Energy Pop" profile (`genre=pop, mood=happy, energy=0.9`).
 
-- What happened when you changed the weight on genre from 2.0 to 0.5
-- What happened when you added tempo or valence to the score
-- How did your system behave for different types of users
+| Rank | Baseline (genre 2.0 / energy 2.0) | After (genre 1.0 / energy 4.0) |
+|------|-----------------------------------|--------------------------------|
+| 1    | Sunrise City — 4.84               | Sunrise City — 5.68            |
+| 2    | Gym Hero — 3.94                   | Gym Hero — 4.88                |
+| 3    | Rooftop Lights — 2.72             | Rooftop Lights — 4.44          |
+| 4    | Storm Runner — 1.98               | Storm Runner — 3.96            |
+| 5    | Pulse Reactor — 1.88              | Pulse Reactor — 3.76           |
+
+**Result: the change made the recommendations more _different_, not more _accurate_.**
+The top-5 order stayed the same, but the scores compressed — the lead of pop songs
+over non-pop songs shrank from about 2 points to under 1. Genre stopped acting as a
+tiebreaker and energy took over. On this small catalog the ranking is fairly robust to
+reweighting, which was itself a useful thing to learn.
+
+Other observations from running six different profiles:
+
+- The system behaves best when a user's genre, mood, and energy all point the same way
+  (e.g. "Chill Lofi" produced a clean top-5 of lofi/acoustic tracks).
+- Adversarial profiles exposed weaknesses: a conflicting `mood=melancholic, energy=0.95`
+  profile silently ignored the "sad" wish because no song matched that mood, and a
+  `genre=kpop` profile (genre not in the catalog) fell back to mood + energy only.
 
 ---
 
